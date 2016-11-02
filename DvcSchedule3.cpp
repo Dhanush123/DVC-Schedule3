@@ -56,6 +56,8 @@ int main() {
   }
   fin.close();
   
+//---------------------------------------------------------------------------------------------------------- finished parse file
+  //outer set of keys, is all the subjects, i.e. SUBJ
   AssociativeArray<int, string> rsKeys;
   queue<string> qs = record.keys();
   for(unsigned int i = 0; i < qs.size(); i++){
@@ -63,17 +65,18 @@ int main() {
     qs.pop();
   }
   
-  for(int i = 0; i < rsKeys.size(); i++)
-    for(int j = i + 1; j < rsKeys.size(); j++)
-      if(rsKeys[i] > rsKeys[j])
+  for(int i = 0; i < rsKeys.size(); i++){
+    for(int j = i + 1; j < rsKeys.size(); j++){
+      if(rsKeys[i] > rsKeys[j]){
         swap(rsKeys[i], rsKeys[j]);
-  
-  int count1 = 0;
-  int count2 = 0;
-
+      }
+    }
+  }  
+//---------------------------------------------------------------------------------------------------------- subjects got and sorted, starting big loop
   for(int i = 0; i < record.size(); i++){
     int numBlank = 0;
 
+    //innner set of keys, is all actual classes, i.e. SUBJ-###
     AssociativeArray<int, string> rcKeys;
     queue<string> qc = record[rsKeys[i]].keys();
     for(unsigned int i = 0; i < qc.size(); i++){
@@ -81,39 +84,34 @@ int main() {
       qc.pop();
     }
     
-    for(int a = 0; a < record[rsKeys[i]].size(); a++)
-      for(int b = a + 1; b < record[rsKeys[i]].size(); b++)
-        if(rcKeys[a] > rcKeys[b])
-          swap(rcKeys[a], rcKeys[b]);
-    
+    for(int x = 0; x < record[rsKeys[i]].size(); x++){
+      for(int y = x + 1; y < record[rsKeys[i]].size(); y++){
+        if(rcKeys[x] > rcKeys[y]){
+          swap(rcKeys[x], rcKeys[y]);
+        }
+      }
+    }
+//------------------------------------------------------------------ actual classes got and sorted
     AssociativeArray<int, string> outputs;
-    
+  
     for(int j = 0; j < record[rsKeys[i]].size(); j++){
       if(rcKeys[j] != "" && record[rsKeys[i]][rcKeys[j]] != 0){
         string s = "  " + rcKeys[j] + ", " + to_string(record[rsKeys[i]][rcKeys[j]]) + " section(s)";
         outputs[j] = s;
-        count2+=record[rsKeys[i]][rcKeys[j]];
       }
       else{
         numBlank++;
       }
     }
-    
+//------------------------------------------------------------------ parsed all classes & their sections
     if(rsKeys[i] != "" && (record[rsKeys[i]].size() - numBlank) > 0){
-//      cout << "numblank for this " << numBlank << endl;
       cout << rsKeys[i] << ", " << record[rsKeys[i]].size() - numBlank << " course(s)" << endl;
     }
-    count1+=record[rsKeys[i]].size();
-//    cout << "outputs size for this " << outputs.size() << endl;
     for(int z = 0; z < outputs.size(); z++){
       if(outputs[z] != "")
       cout << outputs[z] << endl;
     }
   }
-  
+//---------------------------------------------------------------------------------------------------------- did all output, for subject + classes; big loop done
   cout  << "Number of duplicates: " << duprecord << endl;
-  cout << "record size" << record.size() << endl;
-  cout << "Num Keys: " << record.keys().size() << endl;
-  cout << "num by courses " << count1 << endl;
-  cout << "num by sections " << count2 << endl;
 }
