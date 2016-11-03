@@ -60,7 +60,7 @@ int main() {
   //outer set of keys, is all the subjects, i.e. SUBJ
   AssociativeArray<int, string> rsKeys;
   queue<string> qs = record.keys();
-  for(unsigned int i = 0; i < qs.size(); i++){
+  for(unsigned int i = 0; !qs.empty(); i++){
     rsKeys[i] = qs.front();
     qs.pop();
   }
@@ -79,7 +79,7 @@ int main() {
     //innner set of keys, is all actual classes, i.e. SUBJ-###
     AssociativeArray<int, string> rcKeys;
     queue<string> qc = record[rsKeys[i]].keys();
-    for(unsigned int i = 0; i < qc.size(); i++){
+    for(unsigned int i = 0; !qc.empty(); i++){
       rcKeys[i] = qc.front();
       qc.pop();
     }
@@ -95,20 +95,14 @@ int main() {
     AssociativeArray<int, string> outputs;
   
     for(int j = 0; j < record[rsKeys[i]].size(); j++){
-      if(rcKeys[j] != "" && record[rsKeys[i]][rcKeys[j]] != 0){
-        string s = "  " + rcKeys[j] + ", " + to_string(record[rsKeys[i]][rcKeys[j]]) + " section(s)";
-        outputs[j] = s;
-      }
-      else{
-        numBlank++;
-      }
+      string s = "  " + rcKeys[j] + ", " + to_string(record[rsKeys[i]][rcKeys[j]]) + " section(s)";
+      outputs[j] = s;
     }
 //------------------------------------------------------------------ parsed all classes & their sections
-    if(rsKeys[i] != "" && (record[rsKeys[i]].size() - numBlank) > 0){
-      cout << rsKeys[i] << ", " << record[rsKeys[i]].size() - numBlank << " course(s)" << endl;
+    if(rsKeys[i] != "" && (record[rsKeys[i]].size()) > 0){
+      cout << rsKeys[i] << ", " << record[rsKeys[i]].size() << " course(s)" << endl;
     }
     for(int z = 0; z < outputs.size(); z++){
-      if(outputs[z] != "")
       cout << outputs[z] << endl;
     }
   }
